@@ -10,14 +10,12 @@
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
+            flex-direction: column; /* Mudança para garantir que o conteúdo seja empilhado verticalmente */
+            justify-content: space-between; /* Isso coloca o footer no final da página */
+            height: 100vh; /* Certifica que a altura da tela seja 100% */
             background: linear-gradient(to right, #ff7e5f, #feb47b); /* Gradiente de fundo */
             color: white;
             text-align: center;
-            flex-direction: column;
-            overflow: hidden;
         }
 
         h1 {
@@ -106,15 +104,11 @@
         }
 
         .footer {
-            position: relative;
-            bottom: 0;
             padding: 10px 0;
-            width: 100%;
             font-size: 0.9em;
             color: rgba(255, 255, 255, 0.8);
             background-color: rgba(0, 0, 0, 0.3);
             text-align: center;
-            margin-top: auto;
         }
 
         /* Responsividade para telas pequenas */
