@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raspadinha Solidária</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            background: linear-gradient(to right, #ff7e5f, #feb47b); /* Gradiente de fundo */
+            color: white;
+            text-align: center;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitulo {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .descricao {
+            font-size: 1.5em;
+            margin-top: 30px;
+            font-weight: 300;
+            margin-bottom: 30px;
+            max-width: 600px;
+            opacity: 0.9;
+        }
+
+        .causa {
+            font-weight: bold;
+            color: #ff7e5f;
+        }
+
+        .pix-info {
+            font-size: 1.2em;
+            margin: 20px 0;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .pix-info p {
+            margin: 10px 0;
+        }
+
+        .pix-btn {
+            background-color: #ff7e5f;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .pix-btn:hover {
+            background-color: #feb47b;
+        }
+
+        .senha-container {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .senha-container input {
+            padding: 10px;
+            font-size: 1.2em;
+            margin: 10px;
+            width: 250px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .senha-container button {
+            background-color: #feb47b;
+            color: white;
+            padding: 12px 25px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .senha-container button:hover {
+            background-color: #ff7e5f;
+        }
+
+        .footer {
+            position: relative;
+            bottom: 0;
+            padding: 10px 0;
+            width: 100%;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(0, 0, 0, 0.3);
+            text-align: center;
+            margin-top: auto;
+        }
+
+        /* Responsividade para telas pequenas */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5em;
+            }
+
+            .subtitulo {
+                font-size: 1em;
+            }
+
+            .descricao {
+                font-size: 1.2em;
+                padding: 0 15px;
+            }
+
+            .pix-info {
+                font-size: 1em;
+            }
+
+            .pix-btn {
+                width: 100%;
+                font-size: 1.1em;
+                padding: 12px 0;
+            }
+
+            .senha-container input, .senha-container button {
+                width: 90%;
+            }
+        }
+
+        /* Animação do botão de Pix */
+        .pix-info {
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Raspadinha Solidária</h1>
+    <p class="subtitulo">Ajude nossa causa e concorra a prêmios incríveis!</p>
+
+    <div class="descricao">
+        <p>Com o valor de sua doação, você participa da nossa <span class="causa">Raspadinha Solidária</span> e tem a chance de ganhar prêmios e, mais importante, ajudar quem precisa. Todo o valor arrecadado será destinado a <strong>ações sociais de apoio a comunidades carentes</strong>.</p>
+    </div>
+
+    <div class="pix-info">
+        <p>Para participar, faça um PIX no valor de R$ 10,00 para a chave:</p>
+        <h2>1234567890@pix.com.br</h2>
+        <button class="pix-btn" onclick="copiarChavePix()">Copiar Chave Pix</button>
+        <p>Depois do pagamento, insira a senha de acesso abaixo para liberar a raspadinha!</p>
+    </div>
+
+    <!-- Caixa para inserir a senha após o pagamento -->
+    <div class="senha-container" id="senhaContainer">
+        <input type="password" id="senha" placeholder="Digite sua senha" />
+        <button onclick="validarSenha()">Acessar Raspadinha</button>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Raspadinha Solidária | Todos os direitos reservados.</p>
+    </div>
+
+    <script>
+        // Função para copiar a chave Pix
+        function copiarChavePix() {
+            const chavePix = "1234567890@pix.com.br";
+            navigator.clipboard.writeText(chavePix)
+                .then(() => {
+                    alert("Chave Pix copiada! Faça o pagamento e depois insira a senha.");
+                    document.getElementById('senhaContainer').style.display = 'block'; // Mostrar campo de senha
+                })
+                .catch(err => {
+                    alert("Erro ao copiar a chave Pix.");
+                });
+        }
+
+        // Função para validar a senha
+        function validarSenha() {
+            const senhaUsuario = document.getElementById('senha').value;
+            if (senhaUsuario === "1234") { // Exemplo de senha fixa
+                alert("Acesso concedido! Você pode raspar a cartela.");
+                // Aqui você pode redirecionar para a tela da raspadinha ou iniciar o jogo
+            } else {
+                alert("Senha incorreta. Tente novamente.");
+            }
+        }
+    </script>
+</body>
+</html>
