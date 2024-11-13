@@ -13,10 +13,13 @@
             height: 100vh;
             background-color: #f0f0f0;
             margin: 0;
+            text-align: center;
+            flex-direction: column;
         }
 
         .login-container, .raspadinha-container {
             text-align: center;
+            margin-top: 20px;
         }
 
         input {
@@ -32,9 +35,42 @@
             cursor: pointer;
         }
 
-        canvas {
-            border: 1px solid #000;
-            margin-top: 10px;
+        .bola {
+            position: relative;
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border-radius: 50%;
+            overflow: hidden;
+            transition: opacity 0.3s;
+        }
+
+        .bola canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .raspadinha-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 600px;
+        }
+
+        /* Animação de piscamento */
+        @keyframes piscar {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        .piscar {
+            animation: piscar 1s infinite;
         }
     </style>
 </head>
@@ -42,25 +78,24 @@
     <!-- Área de Login -->
     <div class="login-container">
         <input type="password" id="senha" placeholder="Digite sua senha" />
-        <button onclick="verificarSenha()">Raspar</button>
+        <button onclick="verificarSenha()">Entrar</button>
     </div>
 
     <!-- Área da Raspadinha -->
     <div class="raspadinha-container" id="raspadinha" style="display: none;">
-        <canvas id="raspadinhaCanvas" width="300" height="150"></canvas>
-        <button onclick="verificarPremio()">Ver Prêmio</button>
+        <p>Raspe as bolas para descobrir se você ganhou o prêmio!</p>
     </div>
 
     <script>
-        // Defina a senha diretamente no código
-        const senhaCorreta = "1234"; // Altere aqui para a senha que desejar
-        let premio = null;
+        // Senha fixa para autenticação
+        const senhaCorreta = "1234"; // Altere para a senha desejada
+        let premioIndex;
+        let bolas = [];
 
         // Função para verificar a senha
         function verificarSenha() {
-            let senhaUsuario = document.getElementById('senha').value;
+            const senhaUsuario = document.getElementById('senha').value;
 
-            // Verifica se a senha está correta
             if (senhaUsuario === senhaCorreta) {
                 document.querySelector('.login-container').style.display = 'none';
                 document.getElementById('raspadinha').style.display = 'block';
@@ -72,31 +107,86 @@
 
         // Função para iniciar a raspadinha
         function iniciarRaspadinha() {
-            const canvas = document.getElementById('raspadinhaCanvas');
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = "#D3D3D3";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const container = document.getElementById('raspadinha');
 
-            // Definir o prêmio (aleatório para exemplo)
-            premio = Math.random() < 0.5 ? "Você ganhou um prêmio!" : "Tente novamente mais tarde.";
+            // Escolhe uma bola aleatória para ser o prêmio
+            premioIndex = Math.floor(Math.random() * 10);
 
-            // Configurar evento para raspar
-            let isDrawing = false;
+            for (let i = 0; i < 10; i++) {
+                // Cria o elemento da bola
+                const bola = document.createElement('div');
+                bola.classList.add('bola');
 
-            canvas.addEventListener('mousedown', () => isDrawing = true);
-            canvas.addEventListener('mouseup', () => isDrawing = false);
-            canvas.addEventListener('mousemove', (e) => {
-                if (!isDrawing) return;
-                const rect = canvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                ctx.clearRect(x - 10, y - 10, 20, 20); // Limpar área para "raspar"
-            });
+                // Cria o canvas do fundo da bola (para o prêmio ou texto personalizado)
+                const fundoCanvas = document.createElement('canvas');
+                fundoCanvas.width = 100;
+                fundoCanvas.height = 100;
+                const fundoCtx = fundoCanvas.getContext('2d');
+
+                if (i === premioIndex) {
+                    // Exibe o texto do prêmio na bola premiada
+                    fundoCtx.fillStyle = "green"; // Cor dourada para destacar o prêmio
+                    fundoCtx.font = "13px bold";
+                    fundoCtx.textAlign = "center";
+                    fundoCtx.textBaseline = "middle";
+                    fundoCtx.fillText("Ganhou 50 reais!", 50, 50); // Texto do prêmio
+                } else {
+                    // Exibe o texto personalizado nas demais bolas
+                    fundoCtx.fillStyle = "#FFFFFF";
+                    fundoCtx.beginPath();
+                    fundoCtx.arc(50, 50, 50, 0, Math.PI * 2);
+                    fundoCtx.fill();
+
+                    fundoCtx.font = "16px Arial";
+                    fundoCtx.fillStyle = "#000";
+                    fundoCtx.textAlign = "center";
+                    fundoCtx.textBaseline = "middle";
+                    fundoCtx.fillText("Ainda não!", 50, 55); // Texto personalizado
+                }
+
+                bola.appendChild(fundoCanvas);
+
+                // Cria o canvas da camada raspável
+                const raspadinhaCanvas = document.createElement('canvas');
+                raspadinhaCanvas.width = 100;
+                raspadinhaCanvas.height = 100;
+                const raspadinhaCtx = raspadinhaCanvas.getContext('2d');
+
+                // Preenche a camada raspável com cor cinza
+                raspadinhaCtx.fillStyle = "#A9A9A9";
+                raspadinhaCtx.fillRect(0, 0, raspadinhaCanvas.width, raspadinhaCanvas.height);
+
+                raspadinhaCanvas.addEventListener("mousemove", (event) => raspar(event, raspadinhaCanvas, i));
+                raspadinhaCanvas.addEventListener("touchmove", (event) => {
+                    event.preventDefault();
+                    const touch = event.touches[0];
+                    raspar(touch, raspadinhaCanvas, i);
+                });
+
+                bola.appendChild(raspadinhaCanvas);
+                container.appendChild(bola);
+
+                // Armazena a bola para referência futura
+                bolas.push(bola);
+            }
         }
 
-        // Função para verificar o prêmio
-        function verificarPremio() {
-            alert(premio); // Exibe o prêmio
+        // Função para "raspar" a camada de cobertura de uma bola específica
+        function raspar(event, raspadinhaCanvas, bolaIndex) {
+            const rect = raspadinhaCanvas.getBoundingClientRect();
+            const x = (event.clientX || event.pageX) - rect.left;
+            const y = (event.clientY || event.pageY) - rect.top;
+
+            const raspadinhaCtx = raspadinhaCanvas.getContext('2d');
+            raspadinhaCtx.globalCompositeOperation = 'destination-out';
+            raspadinhaCtx.beginPath();
+            raspadinhaCtx.arc(x, y, 15, 0, Math.PI * 2);
+            raspadinhaCtx.fill();
+
+            // Verifica se a bola sorteada foi raspada e aplica o efeito de piscamento
+            if (bolaIndex === premioIndex) {
+                bolas[bolaIndex].classList.add('piscar');
+            }
         }
     </script>
 </body>
