@@ -197,7 +197,7 @@
             const senhaUsuario = document.getElementById('senha').value;
             if (senhaUsuario === "1234") { // Exemplo de senha fixa
                 alert("Acesso concedido! Você pode raspar a cartela.");
-                // Aqui você pode redirecionar para a tela da raspadinha ou iniciar o jogo
+                window.location.href = "raspadinha.html"; // Redireciona para a outra tela
             } else {
                 alert("Senha incorreta. Tente novamente.");
             }
