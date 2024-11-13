@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raspadinha de Prêmios</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+
+        .login-container, .raspadinha-container {
+            text-align: center;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        canvas {
+            border: 1px solid #000;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Área de Login -->
+    <div class="login-container">
+        <input type="password" id="senha" placeholder="Digite sua senha" />
+        <button onclick="verificarSenha()">Raspar</button>
+    </div>
+
+    <!-- Área da Raspadinha -->
+    <div class="raspadinha-container" id="raspadinha" style="display: none;">
+        <canvas id="raspadinhaCanvas" width="300" height="150"></canvas>
+        <button onclick="verificarPremio()">Ver Prêmio</button>
+    </div>
+
+    <script>
+        // Defina a senha diretamente no código
+        const senhaCorreta = "1234"; // Altere aqui para a senha que desejar
+        let premio = null;
+
+        // Função para verificar a senha
+        function verificarSenha() {
+            let senhaUsuario = document.getElementById('senha').value;
+
+            // Verifica se a senha está correta
+            if (senhaUsuario === senhaCorreta) {
+                document.querySelector('.login-container').style.display = 'none';
+                document.getElementById('raspadinha').style.display = 'block';
+                iniciarRaspadinha();
+            } else {
+                alert("Senha incorreta!");
+            }
+        }
+
+        // Função para iniciar a raspadinha
+        function iniciarRaspadinha() {
+            const canvas = document.getElementById('raspadinhaCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = "#D3D3D3";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Definir o prêmio (aleatório para exemplo)
+            premio = Math.random() < 0.5 ? "Você ganhou um prêmio!" : "Tente novamente mais tarde.";
+
+            // Configurar evento para raspar
+            let isDrawing = false;
+
+            canvas.addEventListener('mousedown', () => isDrawing = true);
+            canvas.addEventListener('mouseup', () => isDrawing = false);
+            canvas.addEventListener('mousemove', (e) => {
+                if (!isDrawing) return;
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                ctx.clearRect(x - 10, y - 10, 20, 20); // Limpar área para "raspar"
+            });
+        }
+
+        // Função para verificar o prêmio
+        function verificarPremio() {
+            alert(premio); // Exibe o prêmio
+        }
+    </script>
+</body>
+</html>
