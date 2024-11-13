@@ -190,7 +190,7 @@
             const chavePix = "1234567890@pix.com.br";
             navigator.clipboard.writeText(chavePix)
                 .then(() => {
-                    alert("Chave Pix copiada! Faça o pagamento depois enviar o comprovante pelo whatsapp.");
+                    alert("Chave Pix copiada! Faça o pagamento e depois insira a senha.");
                     document.getElementById('senhaContainer').style.display = 'block'; // Mostrar campo de senha
                 })
                 .catch(err => {
